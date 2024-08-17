@@ -1,0 +1,2 @@
+class BraveError(Exception):
+    pass

@@ -13,10 +13,10 @@ with open(path.join(HERE, "requirements.txt")) as f:
 
 setup(
     name="kiberbrave",
-    version="0.3.0",
+    version="0.3.1",
     packages=find_packages(),
     install_requires=required,
-    url='https://github.com/solovieff/kibernikto-planner',
+    url='https://github.com/solovieff/kibernikto-brave-search',
     license='GPL-3.0 license',
     author_email='solovieff.nnov@gmail.com',
     description='Kibernikto Brave Search',

@@ -1,18 +1,40 @@
-from typing import Optional
+from typing import Optional, Dict, Literal
 
-from brave import AsyncBrave
-from brave.exceptions import BraveError
+import httpx
+from tenacity import AsyncRetrying, stop_after_attempt, wait_fixed
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from kiberbrave.brave.errors import BraveError
+from kiberbrave.brave.types import ImageSearchApiResponse
+from kiberbrave.brave.types.web.web_search_response import WebSearchApiResponse
 
 
-class Kiberbrave(AsyncBrave):
+class SearchSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='BRAVE_')
+    API_KEY: str
+    LANGUAGE: str = 'en'
+    COUNTRY: str = 'ALL'
+    SAFE: str = 'off'
+
+
+BRAVE_SETTINGS = SearchSettings()
+
+
+class Kiberbrave():
     """
-    a dirty fix-fast class for AsyncBrave. Shoyld be a pull request.
+    Based on https://github.com/kayvane1/brave-api fast working solution.
     """
 
-    async def summarize(self, q: str, count: Optional[int] = 20,
-                        offset: Optional[int] = 0,
-                        safesearch: Optional[str] = "moderate", ):
-        pass
+    def __init__(self, api_key: Optional[str] = None) -> None:
+        if api_key is None:
+            api_key = BRAVE_SETTINGS.API_KEY
+        if api_key is None:
+            raise BraveError(
+                "The api_key client option must be set either by passing api_key \
+                    to the client or by setting the BRAVE_API_KEY environment variable"
+            )
+        self.api_key = api_key
+        self.base_url = "https://api.search.brave.com/res/v1/"
 
     async def search(
             self,
@@ -22,15 +44,15 @@ class Kiberbrave(AsyncBrave):
             ui_lang: Optional[str] = None,
             count: Optional[int] = 20,
             offset: Optional[int] = 0,
-            safesearch: Optional[str] = "moderate",
-            freshness: Optional[str] = None,
+            safesearch: Optional[str] = "off",
+            freshness: Literal['pd', 'pw', 'pm', 'py'] | None = None,
             text_decorations: Optional[bool] = True,
             spellcheck: Optional[bool] = True,
-            result_filter: Optional[str] = None,
+            result_filter: Optional[str] = None,  # discussions,faq,infobox,news,query,summarizer,videos,web
             goggles_id: Optional[str] = None,
             units: Optional[str] = None,
             extra_snippets: Optional[bool] = False,
-    ) -> dict:
+    ) -> WebSearchApiResponse:
         """
         Perform a search using the Brave Search API.
 
@@ -91,22 +113,23 @@ class Kiberbrave(AsyncBrave):
         params = {k: v for k, v in params.items() if v is not None}
 
         # API request and response handling
-        response = await self._get(params=params)  # _make_request to be implemented based on sync/async client
+        response = await self._get(params=params,
+                                   endpoint='web')  # _make_request to be implemented based on sync/async client
 
         # Error handling and data parsing
         if response.status_code != 200:
             # Handle errors (e.g., log them, raise exceptions)
             raise BraveError(f"API Error: {response.status_code} - {response.text}")
-
-        return response.json()
+        return WebSearchApiResponse.model_validate(response.json())
+        # return response.json()
 
     async def image(
             self,
             q: str,
             country: Optional[str] = None,
-            search_lang: Optional[str] = None,
+            search_lang: Optional[str] = BRAVE_SETTINGS.LANGUAGE,
             count: Optional[int] = 20,
-            safesearch: Optional[str] = "strict",
+            safesearch: Optional[str] = "off",
             spellcheck: Optional[bool] = True,
     ) -> dict:
         """
@@ -145,6 +168,26 @@ class Kiberbrave(AsyncBrave):
         params = {k: v for k, v in params.items() if v is not None}
 
         # API request and response handling
-        response = await self._get(params=params)
+        response = await self._get(params=params, endpoint='images')
 
-        return response.json()
+        return ImageSearchApiResponse.model_validate(response.json())
+
+    def _prepare_headers(self) -> Dict:
+        """Prepare the common headers required for the API requests."""
+        return {"Accept": "application/json", "Accept-Encoding": "gzip", "X-Subscription-Token": self.api_key}
+
+    async def _get(self, params: Dict = None, endpoint='web') -> httpx.Response:
+        """
+        Perform an asynchronous GET request to the specified endpoint with optional parameters.
+
+        Includes retry logic using tenacity.
+        """
+        url = self.base_url + endpoint + "/search"
+        headers = self._prepare_headers()
+
+        async for attempt in AsyncRetrying(stop=stop_after_attempt(3), wait=wait_fixed(2)):
+            with attempt:
+                async with httpx.AsyncClient() as client:
+                    response = await client.get(url, headers=headers, params=params)
+                    response.raise_for_status()  # Raises HTTPError for bad requests
+                    return response

@@ -1,27 +1,14 @@
 # kiberbrave
 
-Demonstrates how easy it is to use OpenAi tools with Kibernikto as a core.  
-Basic telegram AI planner. Can use voice messages.  
-Can be updated to retrieve plans etc, just a demo functionality for now.
-Reminds of planned messages.
-Uses [Kibernikto library](https://github.com/solovieff/kibernikto) as a core and is mostly here to show it's
-capabilities.
+Using OpenAi tools with Kibernikto as a core.    
+Kibernikto telegram bot (Kiberwebber) connected to Brave search engine [API](https://brave.com/search/api/).      
+Thanks to [Kayvane Shakerifar](https://github.com/kayvane1/brave-api) for the inspiration and basic Brave types.
 
-**All you need to use functions with Kibernikto is:**
+Uses [Kibernikto library](https://github.com/solovieff/kibernikto) as a core.
 
-- Create you functions in 'tools' package and import them as in `main.py` file.
-  See [tools/plan_event.py](https://github.com/solovieff/kibernikto-planner/blob/main/planner/tools/plan_event.py) for
-  details. Pay attention to namings!
-- Optionally: create Kibernikto child class to extend the functionality.  
-  See [_kiberplanner bot](https://github.com/solovieff/kibernikto-planner/blob/main/planner/bots/tooler/_kiberplanner.py)
-  it adds current time to default system message.
-- Use your bot when running a dispatcher like `await comprehensive_dispatcher.async_start(Kiberplanner, tools_to_use)`
-  in `main.py`
+Mostly a set of tools and basic extended Kibernikto bot.
 
-Mostly a set of tools and extended Kibernikto bots.
-
-<img width="526" alt="image" src="https://github.com/solovieff/kibernikto-planner/assets/5033247/c3801b89-fa7f-4840-963b-db1a1c439214">
-
+[img.png](example.png)
 
 **run code**
 (assuming you set the environment yrself)
@@ -31,22 +18,19 @@ Install the requirements
 Run `main.py` file using the environment provided.
 
 **Minimal Environment**
+See [Kibernikto](https://github.com/solovieff/kibernikto) for more configuration.
 
 ```dotenv
 OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXX
 OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_API_MODEL=gpt-4o
-OPENAI_MAX_TOKENS=550
-OPENAI_MAX_MESSAGES=5
-OPENAI_TEMPERATURE=0.1
+OPENAI_API_MODEL=gpt-4o-mini
 
-VOICE_PROCESSOR=openai
-VOICE_FILE_LOCATION=/tmp
-VOICE_OPENAI_API_KEY=sk-XXXXXXXXXXXXXXXX
-VOICE_OPENAI_API_MODEL=whisper-1
-VOICE_OPENAI_API_BASE_URL=https://api.openai.com/v1
+#or vsegpt.ru for multimodel. haiku is a bit more stubborn on tool calls, to be honest.
+#OPENAI_API_KEY=sk-or-vv-d89e94e6c18a1de4a658f186731967fb872ea3c24b09631fb89fb761ba14a268
+#OPENAI_BASE_URL=https://api.vsegpt.ru:6070/v1
+#OPENAI_API_MODEL=anthropic/claude-3-haiku
 
-TG_REACTION_CALLS=["hi","hola", "plan", "schedule"]
+OPENAI_WHO_AM_I=Answer all questions as {0}, the master of knowledge with internet access. After searching the internet, visit the found links and analyze the results to answer the user question. Do not show the found links!!! For example: Q: What is the weather in Moscow? Good Answer: the weather today is sunny 32 graduses. BAD ANSWER: the link to the website. Do not add website links to your answers for news and web searches!
 TG_STICKER_LIST=["CAACAgIAAxkBAAELx29l_2OsQzpRWhmXTIMBM4yekypTOwACdgkAAgi3GQI1Wnpqru6xgTQE"]
 TG_BOT_KEY=XXXXXXXXXX:XXXxxxXXXxxxxXXXxxx
 TG_MASTER_ID=XXXXXXXXX
@@ -55,5 +39,4 @@ TG_PUBLIC=true
 # say hi on startup
 TG_SAY_HI=true
 TG_CHUNK_SENTENCES=5
-
 ```
