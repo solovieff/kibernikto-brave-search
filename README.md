@@ -8,7 +8,8 @@ Uses [Kibernikto library](https://github.com/solovieff/kibernikto) as a core.
 
 Mostly a set of tools and basic extended Kibernikto bot.
 
-[img.png](example.png)
+![kibernikto-brave-search](https://github.com/user-attachments/assets/d031c972-b459-4721-b1d2-c0b28a3ec3e5)
+
 
 **run code**
 (assuming you set the environment yrself)
