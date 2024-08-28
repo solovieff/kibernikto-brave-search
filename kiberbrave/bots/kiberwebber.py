@@ -1,21 +1,8 @@
-import logging
-import pprint
-import re
-import json
 from datetime import datetime
-from typing import Literal
 
-from openai._types import NOT_GIVEN
-from openai.types import CompletionUsage
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from avatar.db.chroma.knowledge_api import find_in_rag
-from avatar.utils.text import stem_text, clear_text_format
+from avatar.utils.text import stem_text
 from kibernikto.bots.cybernoone import Kibernikto
-from kibernikto.interactors import OpenAiExecutorConfig, OpenAIRoles
-
-from avatar.db.sqlite.logs import save_message_log
-from kibernikto.telegram.telegram_bot import KiberniktoChatInfo
+from kibernikto.interactors import OpenAIRoles
 
 
 class Kiberwebber(Kibernikto):
