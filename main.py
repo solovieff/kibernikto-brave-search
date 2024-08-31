@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # get the tools from tool module
     # smart_search_the_web can 'eat' too much tokens, you can change it to search_the_web if needed.
     tools_definitions: List[Toolbox] = get_tools_from_module(tools,
-                                                             permitted_names=['smart_search_the_web', 'read_website'])
+                                                             permitted_names=['website_agent', 'search_the_web'])
 
     for tool in tools_definitions:
         print(f"\n\tApplying {tool.function_name} tool")

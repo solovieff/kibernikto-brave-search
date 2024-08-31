@@ -6,7 +6,7 @@ from kiberbrave.brave.types import ImageSearchApiResponse
 from kiberbrave.brave.types.web.web_search_response import WebSearchApiResponse
 
 
-async def search_the_web(user_request: str, search_type: Literal['images', 'web', 'news'] = 'news',
+async def search_the_web(user_request: str, search_type: Literal['images', 'web', 'news'] = 'web',
                          key: str = "unknown"):
     print(f"\nrunning search_the_web for '{user_request}' and 'search_type' set to '{search_type}' with key={key}\n")
 
@@ -24,12 +24,45 @@ async def search_the_web(user_request: str, search_type: Literal['images', 'web'
                 for image_result in search_result.results:
                     img_urls.append(image_result.properties.url)
                 return img_urls
-        elif search_type == 'web' or search_type == 'news':
+        elif search_type == 'web' or search_type == 'news' or search_type == 'videos':
+            num_results = 13
             search_results: WebSearchApiResponse = await async_brave_search.search(
                 freshness=None,
                 q=query,
                 count=num_results)
-            return {"web": search_results.web_results, "news": search_results.news_results}
+            cut_results = []
+
+            for search_res in search_results.web_results:
+                cut_object = {'title': search_res.get('title'),
+                              'url': str(search_res.get('url')),
+                              # 'description': search_res.get('description'),
+                              'page_age': search_res.get('page_age')}
+                cut_results.append(cut_object)
+
+            for search_res in search_results.news_results:
+                print("news_results\n\n")
+                print(search_res)
+                # cut_object = {'title': search_res.get('title'), 'url': str(search_res.get('url')),
+                #              'description': search_res.get('description'),
+                #              'page_age': search_res.get('page_age'), }
+                # cut_results.append(cut_object)
+
+            if search_results.discussions:
+                for search_res in search_results.discussions:
+                    print("discussions\n\n")
+                    print(search_res)
+                # cut_object = {'title': search_res.get('title'), 'url': str(search_res.get('url')),
+                #              'description': search_res.get('description'),
+                #              'page_age': search_res.get('page_age'), }
+                # cut_results.append(cut_object)
+            for search_res in search_results.video_results:
+                cut_object = {'title': search_res.get('title'),
+                              'url': str(search_res.get('url')),
+                              # 'description': search_res.get('description'),
+                              'page_age': search_res.get('page_age')}
+                cut_results.append(cut_object)
+
+            return cut_results
         elif search_type == 'videos':
             raise NotImplementedError("videos search not implemented yet")
 
@@ -44,7 +77,7 @@ def search_the_web_tool():
         "function": {
             "name": "search_the_web",
             "description": "Use to search the web when asked. If not asked, do not return the found links! give the "
-                           "answer on user question! Visit found links if not enough info.",
+                           "answer on user question using your younger brother if needed!",
             "parameters": {
                 "type": "object",
                 "properties": {
