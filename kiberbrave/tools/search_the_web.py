@@ -35,7 +35,7 @@ async def search_the_web(user_request: str, search_type: Literal['images', 'web'
             for search_res in search_results.web_results:
                 cut_object = {'title': search_res.get('title'),
                               'url': str(search_res.get('url')),
-                              # 'description': search_res.get('description'),
+                              'description': search_res.get('description'),
                               'page_age': search_res.get('page_age')}
                 cut_results.append(cut_object)
 

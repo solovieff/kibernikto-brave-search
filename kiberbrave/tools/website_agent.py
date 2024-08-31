@@ -7,15 +7,15 @@ from kiberbrave.tools import read_website
 from kibernikto.telegram import get_ai_executor
 
 
-async def website_agent(url: str, content: str, key: str = "unknown"):
+async def website_agent(url: str, your_request: str, key: str = "unknown"):
     print(f"\nrunning website_agent for '{url}' with key={key}\n")
-    print(f"\nrequest is '{content}'\n")
+    print(f"\nrequest is '{your_request}'\n")
 
     try:
         transcript = await read_website.read_website(url, key=key)
         myself: Kiberwebber = get_ai_executor(key_id=int(key))
         worker: TextWorker = myself.textworker
-        reply = await worker.heed_and_reply(message=f"[TEXT: {transcript}] \n AI BROTHER REQUEST: {content}",
+        reply = await worker.heed_and_reply(message=f"[TEXT: {transcript}] \n AI BROTHER REQUEST: {your_request}",
                                             save_to_history=False)
         print(f'reply is {reply}')
         return reply
@@ -41,7 +41,7 @@ def website_agent_tool():
                         "type": "string",
                         "description": "website or youtube url to process",
                     },
-                    "content": {
+                    "your_request": {
                         "type": "string",
                         "description": """Your question or directions to another AI regarding the given link.
                         """,
