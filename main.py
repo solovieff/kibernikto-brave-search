@@ -4,6 +4,7 @@ from kiberbrave.bots.kiberwebber import Kiberwebber
 from kibernikto.interactors.tools import get_tools_from_module, Toolbox
 from kibernikto.telegram import comprehensive_dispatcher
 from kibernikto.telegram import commands
+import kibernikto.telegram.service
 from kibernikto.utils.environment import configure_logger, print_banner
 from kiberbrave import tools
 
