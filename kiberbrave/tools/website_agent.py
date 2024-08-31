@@ -48,7 +48,7 @@ def website_agent_tool():
 
                     }
                 },
-                "required": ["url"]
+                "required": ["url", "your_request"]
             }
         }
     }
