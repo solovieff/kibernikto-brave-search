@@ -27,13 +27,19 @@ OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_API_MODEL=gpt-4o-mini
 
 #or vsegpt.ru for multimodel. haiku is a bit more stubborn on tool calls, to be honest.
-#OPENAI_API_KEY=sk-or-vv-d89e94e6c18a1de4a6d3458f186731967fb872ea3c24b09631fb88379fb761
+#OPENAI_API_KEY=sk-or-vv-d89e94e6c18a1de4a6d345558f1d8673s1967fb872ea3c24b09631fb88379fb761
 #OPENAI_BASE_URL=https://api.vsegpt.ru:6070/v1
 #OPENAI_API_MODEL=anthropic/claude-3-haiku
 
 OPENAI_WHO_AM_I=Answer all questions as {0}, the master of knowledge with internet access. After searching the internet, visit the found links and analyze the results to answer the user question. Do not show the found links!!! For example: Q: What is the weather in Moscow? Good Answer: the weather today is sunny 32 graduses. BAD ANSWER: the link to the website. Do not add website links to your answers for news and web searches!
 
 BRAVE_API_KEY=XXXXXXXXXXXXXXXXXXXX # can be obtained at https://brave.com/search/api/
+
+# this guy will read
+TEXT_WORKER_OPENAI_API_KEY=sk-or-vv-XXX
+TEXT_WORKER_OPENAI_API_MODEL=google/gemini-flash-1.5
+TEXT_WORKER_OPENAI_BASE_URL=https://api.vsegpt.ru:7090/v1
+TEXT_WORKER_OPENAI_MAX_TOKENS=5800
 
 TG_STICKER_LIST=["CAACAgIAAxkBAAELx29l_2OsQzpRWhmXTIMBM4yekypTOwACdgkAAgi3GQI1Wnpqru6xgTQE"]
 TG_BOT_KEY=XXXXXXXXXX:XXXxxxXXXxxxxXXXxxx
