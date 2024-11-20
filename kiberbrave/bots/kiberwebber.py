@@ -27,7 +27,7 @@ class Kiberwebber(Kibernikto):
         wai += today
 
         if self.chat_info:
-            conversation_information = self._generate_chat_info()
+            conversation_information = self._get_telegram_chat_info()
             wai += f"\n{conversation_information}"
         # lol
         print(f"{self.__class__.__name__}: [{wai}]")

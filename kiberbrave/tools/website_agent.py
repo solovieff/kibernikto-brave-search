@@ -6,15 +6,25 @@ from kiberbrave.bots.textworker import TextWorker
 from kiberbrave.tools import read_website
 from kibernikto.telegram import get_ai_executor
 
+[{
+    "name": "website_agent",
+    "description": "",
+    "params": "",
+    "kibernikto_child_class": Kiberwebber
+}]
 
 async def website_agent(url: str, your_request: str, key: str = "unknown"):
     print(f"\nrunning website_agent for '{url}' with key={key}\n")
     print(f"\nrequest is '{your_request}'\n")
 
+    class_i_need = TextWorker
+
     try:
         transcript = await read_website.read_website(url, key=key)
         myself: Kiberwebber = get_ai_executor(key_id=int(key))
-        worker: TextWorker = myself.textworker
+        worker = myself.get_class_for_tool(class_i_need)
+
+        #worker: TextWorker = myself.textworker
         reply = await worker.heed_and_reply(message=f"[TEXT: {transcript}] \n AI BROTHER REQUEST: {your_request}",
                                             save_to_history=False)
         print(f'reply is {reply}')
